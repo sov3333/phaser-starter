@@ -51,6 +51,8 @@
     let cursors;
 
     let stars;
+    let score = 0;
+    let scoreText;
 
     function create ()
     {
@@ -115,10 +117,23 @@
         // check if player overlaps with star, then run collectStar() function
         this.physics.add.overlap(player, stars, collectStar, null, this);
 
+        // setup scoreText
+        // 16 x 16 is the coordinate to display the text at. 
+        // 'score: 0' is the default string to display and the object that follows contains a font size and fill color. 
+        // By not specifying which font we'll actually use the Phaser default, which is Courier.
+        scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+
     }
 
     function collectStar (player, star) {
         star.disableBody(true, true);
+
+        // increase score
+        score += 10;
+        
+        // update scoreText
+        scoreText.setText('Score: ' + score);
+
     }
 
     function update ()
