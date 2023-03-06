@@ -50,6 +50,8 @@
     let player;
     let cursors;
 
+    let stars;
+
     function create ()
     {
         this.add.image(400, 300, 'sky');
@@ -94,6 +96,29 @@
         // use built-in keyboard manager
         cursors = this.input.keyboard.createCursorKeys();
 
+        // create dynamic physics group for stars so they can move and bounce
+        // groups can take configuration objects to aid setup
+        stars = this.physics.add.group({
+            key: 'star',
+            repeat: 11,
+            setXY: { x: 12, y: 0, stepX: 70 }
+        });
+
+        // create children that inherit the star texture from group config object
+        stars.children.iterate(function (child) {
+            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        })
+        
+        // add collider object between stars and platforms
+        this.physics.add.collider(stars, platforms);
+
+        // check if player overlaps with star, then run collectStar() function
+        this.physics.add.overlap(player, stars, collectStar, null, this);
+
+    }
+
+    function collectStar (player, star) {
+        star.disableBody(true, true);
     }
 
     function update ()
